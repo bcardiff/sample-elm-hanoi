@@ -47,6 +47,21 @@ hanoi n a b c =
     0 -> []
     _ -> hanoi (n-1) a c b ++ [(a,b)] ++ hanoi (n-1) c b a
 
+hanoi' : Int -> Int -> Int -> Int -> List DiskMove
+hanoi' n a b c =
+  case (n, a, b, c) of
+    (0,_,_,_) -> []
+    (1,1,2,_) -> [(1,2)]
+    (1,2,3,_) -> [(2,3)]
+    (1,1,3,2) -> hanoi' 1 1 2 3 ++ hanoi' 1 2 3 1
+    (n,1,3,2) -> hanoi' (n-1) 1 3 2 ++ [(1,2)] ++ hanoi' (n-1) 3 1 2 ++ [(2,3)] ++ hanoi' (n-1) 1 3 2
+    (n,1,2,3) -> hanoi' (n-1) 1 3 2 ++ [(1,2)] ++ hanoi' (n-1) 3 2 1
+    (n,2,1,3) -> hanoi' (n-1) 2 3 1 ++ [(2,1)] ++ hanoi' (n-1) 3 1 2
+    (n,2,3,1) -> hanoi' (n-1) 2 1 3 ++ [(2,3)] ++ hanoi' (n-1) 1 3 2
+    (n,3,1,2) -> hanoi' (n-1) 3 1 2 ++ [(3,2)] ++ hanoi' (n-1) 1 3 2 ++ [(2,1)] ++ hanoi' (n-1) 3 1 2
+    (n,3,2,1) -> hanoi' (n-1) 3 1 2 ++ [(3,2)] ++ hanoi' (n-1) 1 2 3
+    (_,_,_,_) -> Debug.crash "not implemented" -- hanoi' (n-1) a c b ++ [(a,b)] ++ hanoi' (n-1) c b a
+
 towerMove : DiskMove -> StickState -> StickState
 towerMove m l =
   case (m,l) of
